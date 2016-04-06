@@ -1,0 +1,11 @@
+Create key
+openssl genrsa -des3 -out jettyssl.key
+
+Create cert
+openssl req -new -x509 -key jettyssl.key -out jettyssl.crt
+
+Create p12 
+openssl pkcs12 -inkey jettyssl.key -in jettyssl.crt -export -out jettyssl.pkcs12
+
+Import to keystore
+keytool -importkeystore -srckeystore jettyssl.pkcs12 -srcstoretype PKCS12 -destkeystore keystore
