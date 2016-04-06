@@ -28,16 +28,18 @@ public class ExampleServlet extends HttpServlet {
 
         String user = "anonymous";
 
-        java.security.cert.X509Certificate[] certs
-                = (java.security.cert.X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
+        if (req.isSecure()) {
+            java.security.cert.X509Certificate[] certs
+                    = (java.security.cert.X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
-        // Need certificates.
-        if (certs != null && certs.length > 0 && certs[0] != null) {
+            // Need certificates.
+            if (certs != null && certs.length > 0 && certs[0] != null) {
 
-            user = ((certs[0].getSubjectDN() == null) ? "clientcert" : certs[0].getSubjectDN().getName()  + ":" + certs[0].getSerialNumber().toString());
-        } else {
-            if (resp != null) {
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "A client certificate is required for accessing this web application but the server's listener is not configured for mutual authentication (or the client did not provide a certificate).");
+                user = ((certs[0].getSubjectDN() == null) ? "clientcert" : certs[0].getSubjectDN().getName() + ":" + certs[0].getSerialNumber().toString());
+            } else {
+                if (resp != null) {
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN, "A client certificate is required for accessing this web application but the server's listener is not configured for mutual authentication (or the client did not provide a certificate).");
+                }
             }
         }
 
