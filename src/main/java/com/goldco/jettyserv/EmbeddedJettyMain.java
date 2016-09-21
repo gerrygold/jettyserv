@@ -41,7 +41,7 @@ public class EmbeddedJettyMain {
 
     public static void main(String[] args) throws Exception {
 
-        ServerMode mode = (args.length == 0 ? ServerMode.http : ServerMode.https);
+        ServerMode mode = (args.length == 0 ? ServerMode.https : ServerMode.https);
 
         startServer(mode);
     }
@@ -50,13 +50,14 @@ public class EmbeddedJettyMain {
         Server server = new Server();
         HttpConfiguration http = new HttpConfiguration();
         if (mode == ServerMode.http) {
+            System.out.println("Starting server in HTTP mode on port" + HTTP_PORT);
             ServerConnector connector = new ServerConnector(server);
             connector.setPort(HTTP_PORT);
             server.setConnectors(new Connector[]{connector});
 
         } else {
             // HTTP Configuration
-
+            System.out.println("Starting server in HTTPS mode on port" + HTTPS_PORT);
             http.addCustomizer(new SecureRequestCustomizer());
 
             // Configuration for HTTPS redirect
@@ -76,8 +77,9 @@ public class EmbeddedJettyMain {
             sslContextFactory.setKeyManagerPassword(KEYSTORE_MANAGER_PASSWORD);
             sslContextFactory.setKeyStoreType("jks");
 
-            sslContextFactory.setTrustAll(false);
-            sslContextFactory.setNeedClientAuth(true);
+            sslContextFactory.setTrustAll(true);
+            sslContextFactory.setNeedClientAuth(true);  //when true client cert is sent
+                                                         //when false client cert is not sent
 
             sslContextFactory.setTrustStorePath(TRUSTSTORE_PATH);
             sslContextFactory.setTrustStorePassword(TRUSTSTORE_PASSWORD);
